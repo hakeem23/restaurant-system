@@ -106,12 +106,63 @@ To run tests using the testing database:
 php artisan test --env=testing
 ```
 
----
-
 ## 📌 Notes
 
 - Ensure the `.env` file is correctly configured for both local and testing environments.
 - If using Docker, confirm the database containers are running.
 - Debug logs can be found in `storage/logs/laravel.log`.
+---
+
+# Technical Overview of Restaurant System
+
+## Design Patterns Used
+
+### Repository Pattern
+- The **Repository Pattern** is used to abstract database queries and promote separation of concerns.
+- Each model has its corresponding repository handling data interactions (e.g., `OrderRepository`, `ProductRepository`, `IngredientRepository`).
+- Benefits:
+    - Keeps controllers clean and focused on business logic.
+    - Improves testability by allowing dependency injection.
+    - Encapsulates complex queries in dedicated classes.
+
+### Service Layer
+- A **Service Layer** is introduced to handle business logic, making controllers lightweight.
+- Example: `OrderService` processes order creation, stock deduction, and low-stock alerts.
+
+### Dependency Injection
+- Dependencies such as repositories and services are injected into controllers, improving modularity and testability.
+
+## SOLID Principles Applied
+
+### **S**ingle Responsibility Principle (SRP)
+- Each class has a single responsibility:
+    - **Repositories** handle database interactions.
+    - **Services** handle business logic.
+    - **Controllers** handle request validation and response formatting.
+
+### **O**pen-Closed Principle (OCP)
+- The system is open for extension but closed for modification.
+- Example: New notification methods (e.g., SMS, Slack) can be added without modifying existing email alerts.
+
+## Additional Technical Details
+
+### Database Design
+- Uses a **normalized relational schema**:
+    - `products` table stores product information.
+    - `ingredients` table tracks stock levels.
+    - `orders` table records customer orders.
+    - `order_product` pivot table maintains many-to-many relationships between orders and products.
+
+### Event-Driven Architecture
+- **Events and Listeners** are used for handling asynchronous tasks like sending email notifications.
+- Example: When an order is placed, an event triggers an email alert if stock is low.
+
+### Testing Strategy
+- Unit and feature tests are written for repositories, services, and controllers.
+- Mocks and fakes are used to isolate dependencies.
+
+## Conclusion
+This project follows best practices in design patterns, SOLID principles, and software architecture to ensure maintainability, scalability, and testability.
+
 
 
